@@ -1,47 +1,27 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  display: none; /* Hidden by default */
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Ensure it is above other content */
-}
+import React, { useState } from 'react';
+import { Card, CardContent, Typography, TextField, Button, IconButton, Box } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import './Overlay.css'; // Import CSS for overlay styling
 
-.overlay.show {
-  display: flex; /* Show the overlay when `show` is true */
-}
+const Overlay = ({ show, onClose }) => {
+  const [selectedOption, setSelectedOption] = useState('');
+  const [numberValue, setNumberValue] = useState('');
 
-.overlay-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  position: relative;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-}
+  const handleDropdownChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
 
-.overlay-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
+  const handleNumberChange = (e) => {
+    setNumberValue(e.target.value);
+  };
 
-import React from 'react';
-import './Overlay.css'; // Import CSS for styling
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Selected option: ${selectedOption}, Number value: ${numberValue}`);
+    onClose();
+  };
 
-const Overlay = ({ show, onClose, children }) => {
-  // Function to handle clicks on the overlay background
   const handleOverlayClick = (e) => {
-    // Only close the overlay if clicking directly on the overlay background (not on the content)
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -50,8 +30,49 @@ const Overlay = ({ show, onClose, children }) => {
   return (
     <div className={`overlay ${show ? 'show' : ''}`} onClick={handleOverlayClick}>
       <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-        <button className="overlay-close" onClick={onClose}>&times;</button>
-        {children}
+        <Card>
+          <CardContent>
+            <Box display="flex" justifyContent="flex-end">
+              <IconButton onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Typography variant="h6" gutterBottom>
+              Form Overlay
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                select
+                label="Select an option"
+                value={selectedOption}
+                onChange={handleDropdownChange}
+                fullWidth
+                margin="normal"
+                required
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                <option value="">Select...</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </TextField>
+              <TextField
+                label="Enter a number"
+                type="number"
+                value={numberValue}
+                onChange={handleNumberChange}
+                fullWidth
+                margin="normal"
+                required
+              />
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
@@ -59,3 +80,31 @@ const Overlay = ({ show, onClose, children }) => {
 
 export default Overlay;
 
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.overlay-content {
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
