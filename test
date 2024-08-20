@@ -34,3 +34,28 @@
   border: none;
   cursor: pointer;
 }
+
+import React from 'react';
+import './Overlay.css'; // Import CSS for styling
+
+const Overlay = ({ show, onClose, children }) => {
+  // Function to handle clicks on the overlay background
+  const handleOverlayClick = (e) => {
+    // Only close the overlay if clicking directly on the overlay background (not on the content)
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div className={`overlay ${show ? 'show' : ''}`} onClick={handleOverlayClick}>
+      <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
+        <button className="overlay-close" onClick={onClose}>&times;</button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default Overlay;
+
